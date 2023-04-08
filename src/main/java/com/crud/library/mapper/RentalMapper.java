@@ -11,7 +11,6 @@ public class RentalMapper {
     public Rental mapToRental(final RentalDto rentalDto) {
         return new Rental(
                 rentalDto.getId(),
-                rentalDto.getReader_id(),
                 rentalDto.getRentalDate(),
                 rentalDto.getReturnDate()
         );
@@ -20,7 +19,6 @@ public class RentalMapper {
     public RentalDto mapToRentalDto(final Rental rental) {
         return new RentalDto(
                 rental.getId(),
-                rental.getReader_id(),
                 rental.getRentalDate(),
                 rental.getReturnDate()
         );

@@ -3,15 +3,19 @@ package com.crud.library.controller;
 import com.crud.library.domain.Book;
 import com.crud.library.domain.BookTitle;
 import com.crud.library.domain.Reader;
+import com.crud.library.domain.Rental;
 import com.crud.library.dto.BookDto;
 import com.crud.library.dto.BookTitleDto;
 import com.crud.library.dto.ReaderDto;
+import com.crud.library.dto.RentalDto;
 import com.crud.library.mapper.BookMapper;
 import com.crud.library.mapper.BookTitleMapper;
 import com.crud.library.mapper.ReaderMapper;
+import com.crud.library.mapper.RentalMapper;
 import com.crud.library.service.BookService;
 import com.crud.library.service.BookTitleService;
 import com.crud.library.service.ReaderService;
+import com.crud.library.service.RentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +33,12 @@ public class LibraryController {
     private final ReaderService readerService;
     private final BookService bookService;
     private final BookTitleService bookTitleService;
+    private final RentalService rentalService;
 
     private final ReaderMapper readerMapper;
     private final BookMapper bookMapper;
     private final BookTitleMapper bookTitleMapper;
+    private final RentalMapper rentalMapper;
 
     //Get
     @GetMapping("/readers")
@@ -89,6 +95,13 @@ public class LibraryController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(value = "/rentals", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> createTaskBookRental(@RequestBody RentalDto taskDtoBook) {
+        Rental task = rentalMapper.mapToRental(taskDtoBook);
+        rentalService.saveTask(task);
+        return ResponseEntity.ok().build();
+    }
+
     //Put
     @PutMapping(value = "/books")
     public ResponseEntity<BookDto> updateTask(@RequestBody BookDto taskDto) {
@@ -102,7 +115,7 @@ public class LibraryController {
             params = {"id", "status"},
             method = PUT)
     @ResponseBody
-    public BookDto setBookStatus(@RequestParam("id") long id, @RequestParam("status") String status) {
+    public BookDto updateBookStatus(@RequestParam("id") long id, @RequestParam("status") String status) {
         return bookMapper.mapToBookDto(bookService.saveNewStatus(id, status));
     }
 }

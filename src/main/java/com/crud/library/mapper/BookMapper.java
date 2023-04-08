@@ -11,7 +11,6 @@ public class BookMapper {
     public Book mapToBook(final BookDto bookDto) {
         return new Book(
                 bookDto.getId(),
-                bookDto.getTitle_id(),
                 bookDto.getStatus()
         );
     }
@@ -19,7 +18,6 @@ public class BookMapper {
     public BookDto mapToBookDto(final Book book) {
         return new BookDto(
                 book.getId(),
-                book.getTitle_id(),
                 book.getStatus()
         );
     }
