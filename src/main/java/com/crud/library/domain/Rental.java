@@ -14,12 +14,12 @@ import java.time.LocalDate;
 public class Rental {
 
     @OneToOne
-    @JoinColumn(name = "book_title_id")
-    private Book book;
-
-    @OneToOne
     @JoinColumn(name = "reader_id")
     private Reader reader;
+
+    @OneToOne
+    @JoinColumn(name = "book_title_id")
+    private Book book;
 
     @Id
     @GeneratedValue
@@ -36,4 +36,10 @@ public class Rental {
         this.rentalDate = rentalDate;
         this.returnDate = returnDate;
     }
+
+    /*
+    @OneToOne
+    @JoinColumn(name = "book_title_id")
+    private Book book;
+    */
 }

@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
-
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @CrossOrigin("*")
@@ -41,8 +40,6 @@ public class LibraryController {
     private final BookMapper bookMapper;
     private final BookTitleMapper bookTitleMapper;
     private final RentalMapper rentalMapper;
-
-    private BookTitle bookTitle;
 
     //Get
     @GetMapping("/readers")
@@ -106,17 +103,10 @@ public class LibraryController {
         return ResponseEntity.ok().build();
     }
 
-    //Put
-    @PutMapping(value = "/books")
-    public ResponseEntity<BookDto> updateTask(@RequestBody BookDto taskDto) {
-        Book task = bookMapper.mapToBook(taskDto);
-        Book savedTask = bookService.saveTask(task);
-        return ResponseEntity.ok(bookMapper.mapToBookDto(savedTask));
-    }
-
     @PostMapping(value = "/changesOne",
             params = {"bookTitle", "author", "publicationDate"})
-    public ResponseEntity<BookDto> updateTaskChange(@RequestBody BookDto taskDto,
+    public ResponseEntity<BookDto> updateTaskChange(
+            @RequestBody BookDto taskDto,
             @RequestParam("bookTitle") String bookTitleName,
             @RequestParam("author") String author,
             @RequestParam("publicationDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date publicationDate) {
@@ -143,6 +133,33 @@ public class LibraryController {
         return bookMapper.mapToBookDto(savedTask);
     }
 
+    //Put
+    @PutMapping(value = "/books")
+    public ResponseEntity<BookDto> updateTask(@RequestBody BookDto taskDto) {
+        Book task = bookMapper.mapToBook(taskDto);
+        Book savedTask = bookService.saveTask(task);
+        return ResponseEntity.ok(bookMapper.mapToBookDto(savedTask));
+    }
+
+    //Put
+    @PutMapping(value = "/changesRental",
+            params = {"status", "idBook", "idReader"})
+    public ResponseEntity<RentalDto> updateTaskRental(
+            @RequestBody RentalDto taskDto,
+            @RequestParam("status") String status,
+            @RequestParam("idBook") Long idBook,
+            @RequestParam("idReader") Long idReader) throws LibraryNotFoundException {
+        Rental task = rentalMapper.mapToRental(taskDto);
+        task.setId(task.getId());
+        Book book = bookService.getTask(idBook);
+        book.setStatus(status);
+        task.setBook(book);
+        Reader reader = readerService.getTask(idReader);
+        task.setReader(reader);
+        Rental savedTask = rentalService.saveTask(task);
+        return ResponseEntity.ok(rentalMapper.mapToRentalDto(savedTask));
+    }
+
     @RequestMapping(
             value = "/books",
             params = {"id", "status"},
@@ -151,4 +168,6 @@ public class LibraryController {
     public BookDto updateBookStatus(@RequestParam("id") long id, @RequestParam("status") String status) {
         return bookMapper.mapToBookDto(bookService.saveNewStatus(id, status));
     }
+
+
 }

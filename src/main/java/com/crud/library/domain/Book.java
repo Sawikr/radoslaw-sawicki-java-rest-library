@@ -12,11 +12,9 @@ import lombok.Setter;
 @Entity(name = "books")
 public class Book {
 
-    /*
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "book_title_id")
-    private BookTitle bookTitle;
-    */
+    @OneToOne
+    @JoinColumn(name = "rental_id")
+    private Rental rental;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_title_list_id")
@@ -38,4 +36,9 @@ public class Book {
         this.status = status;
     }
 
+    /*
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "book_title_id")
+    private BookTitle bookTitle;
+    */
 }
