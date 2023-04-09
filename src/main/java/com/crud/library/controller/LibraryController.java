@@ -17,9 +17,11 @@ import com.crud.library.service.BookTitleService;
 import com.crud.library.service.ReaderService;
 import com.crud.library.service.RentalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Date;
 import java.util.List;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -39,6 +41,8 @@ public class LibraryController {
     private final BookMapper bookMapper;
     private final BookTitleMapper bookTitleMapper;
     private final RentalMapper rentalMapper;
+
+    private BookTitle bookTitle;
 
     //Get
     @GetMapping("/readers")
@@ -108,6 +112,35 @@ public class LibraryController {
         Book task = bookMapper.mapToBook(taskDto);
         Book savedTask = bookService.saveTask(task);
         return ResponseEntity.ok(bookMapper.mapToBookDto(savedTask));
+    }
+
+    @PostMapping(value = "/changesOne",
+            params = {"bookTitle", "author", "publicationDate"})
+    public ResponseEntity<BookDto> updateTaskChange(@RequestBody BookDto taskDto,
+            @RequestParam("bookTitle") String bookTitleName,
+            @RequestParam("author") String author,
+            @RequestParam("publicationDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date publicationDate) {
+        Book task = bookMapper.mapToBook(taskDto);
+        BookTitle bookTitleNew = new BookTitle(bookTitleName, author, publicationDate);
+        task.setBookTitle(bookTitleNew);
+        Book savedTask = bookService.saveTask(task);
+        return ResponseEntity.ok(bookMapper.mapToBookDto(savedTask));
+    }
+
+    @RequestMapping(value = "/changesTwo",
+            params = {"bookTitle", "author", "publicationDate"},
+            method = PUT)
+    @ResponseBody
+    public BookDto updateTaskChangeRequestMapping(
+            @RequestBody BookDto taskDto,
+            @RequestParam("bookTitle") String bookTitleName,
+            @RequestParam("author") String author,
+            @RequestParam("publicationDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date publicationDate) {
+        Book task = bookMapper.mapToBook(taskDto);
+        BookTitle bookTitleNew = new BookTitle(bookTitleName, author, publicationDate);
+        task.setBookTitle(bookTitleNew);
+        Book savedTask = bookService.saveTask(task);
+        return bookMapper.mapToBookDto(savedTask);
     }
 
     @RequestMapping(

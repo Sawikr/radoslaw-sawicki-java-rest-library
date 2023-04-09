@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity(name = "books")
 public class Book {
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "book_title_id")
     private BookTitle bookTitle;
 

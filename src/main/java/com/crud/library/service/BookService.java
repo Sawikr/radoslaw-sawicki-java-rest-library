@@ -3,16 +3,17 @@ package com.crud.library.service;
 import com.crud.library.controller.LibraryNotFoundException;
 import com.crud.library.domain.Book;
 import com.crud.library.repository.BookRepository;
+import com.crud.library.repository.BookTitleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookTitleRepository bookTitleRepository;
 
     public List<Book> getAllTasks() {
         return bookRepository.findAll();

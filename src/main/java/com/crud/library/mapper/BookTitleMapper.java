@@ -10,7 +10,7 @@ public class BookTitleMapper {
 
     public BookTitle mapToBookTitle(final BookTitleDto bookTitleDto) {
         return new BookTitle(
-                bookTitleDto.getId(),
+                //bookTitleDto.getId(),
                 bookTitleDto.getBookTitle(),
                 bookTitleDto.getAuthor(),
                 bookTitleDto.getPublicationDate()

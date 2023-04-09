@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -16,32 +14,10 @@ import java.util.List;
 @Table(name = "titles")
 public class BookTitle {
 
-    private Long id;
-    private List<Book> book = new ArrayList<>();
-
-    public BookTitle(Long id, String bookTitle, String author, LocalDate publicationDate) {
-        this.id = id;
-        this.bookTitle = bookTitle;
-        this.author = author;
-        this.publicationDate = publicationDate;
-    }
-
-    @OneToMany(
-            targetEntity = Book.class,
-            mappedBy = "bookTitle",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
-    public List<Book> getBook() {
-        return book;
-    }
-
     @Id
     @GeneratedValue
     @Column(name = "Id", unique = true)
-    public Long getId() {
-        return id;
-    }
+    private Long id;
 
     @Column(name = "book_title")
     private String bookTitle;
@@ -50,5 +26,11 @@ public class BookTitle {
     private String author;
 
     @Column(name = "publication_date")
-    private LocalDate publicationDate;
+    private Date publicationDate;
+
+    public BookTitle(String bookTitle, String author, Date publicationDate) {
+        this.bookTitle = bookTitle;
+        this.author = author;
+        this.publicationDate = publicationDate;
+    }
 }
