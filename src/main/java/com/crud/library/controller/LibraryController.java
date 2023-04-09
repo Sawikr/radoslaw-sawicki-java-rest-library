@@ -23,8 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @CrossOrigin("*")
 @RestController
@@ -122,14 +122,14 @@ public class LibraryController {
             @RequestParam("publicationDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date publicationDate) {
         Book task = bookMapper.mapToBook(taskDto);
         BookTitle bookTitleNew = new BookTitle(bookTitleName, author, publicationDate);
-        task.setBookTitle(bookTitleNew);
+        task.setBookTitleList(bookTitleNew);
         Book savedTask = bookService.saveTask(task);
         return ResponseEntity.ok(bookMapper.mapToBookDto(savedTask));
     }
 
     @RequestMapping(value = "/changesTwo",
             params = {"bookTitle", "author", "publicationDate"},
-            method = PUT)
+            method = POST)
     @ResponseBody
     public BookDto updateTaskChangeRequestMapping(
             @RequestBody BookDto taskDto,
@@ -138,7 +138,7 @@ public class LibraryController {
             @RequestParam("publicationDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date publicationDate) {
         Book task = bookMapper.mapToBook(taskDto);
         BookTitle bookTitleNew = new BookTitle(bookTitleName, author, publicationDate);
-        task.setBookTitle(bookTitleNew);
+        task.setBookTitleList(bookTitleNew);
         Book savedTask = bookService.saveTask(task);
         return bookMapper.mapToBookDto(savedTask);
     }

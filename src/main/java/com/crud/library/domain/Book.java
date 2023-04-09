@@ -12,9 +12,15 @@ import lombok.Setter;
 @Entity(name = "books")
 public class Book {
 
+    /*
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "book_title_id")
     private BookTitle bookTitle;
+    */
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "book_title_list_id")
+    private BookTitle bookTitleList;
 
     @Id
     @GeneratedValue
@@ -31,4 +37,5 @@ public class Book {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

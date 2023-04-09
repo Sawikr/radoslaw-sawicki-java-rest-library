@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.Date;
+import java.util.*;
+
+/**
+ * @apiNote It's working only code with field (@OneToMany)
+ */
 
 @Getter
 @Setter
@@ -13,6 +17,14 @@ import java.util.Date;
 @Entity
 @Table(name = "titles")
 public class BookTitle {
+
+    @OneToMany(
+            targetEntity = Book.class,
+            mappedBy = "bookTitleList",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private List<Book> book = new ArrayList<>();
 
     @Id
     @GeneratedValue
