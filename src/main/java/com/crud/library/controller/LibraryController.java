@@ -12,12 +12,10 @@ import com.crud.library.mapper.BookMapper;
 import com.crud.library.mapper.BookTitleMapper;
 import com.crud.library.mapper.ReaderMapper;
 import com.crud.library.mapper.RentalMapper;
-import com.crud.library.service.BookService;
-import com.crud.library.service.BookTitleService;
-import com.crud.library.service.ReaderService;
-import com.crud.library.service.RentalService;
+import com.crud.library.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,7 +67,7 @@ public class LibraryController {
             value = "/titles",
             params = {"bookTitle"},
             method = GET)
-    @ResponseBody
+    //@ResponseBody //not necessary
     public List<BookTitleDto> getBookTitles(@RequestParam("bookTitle") String bookTitle) {
         return bookTitleMapper.mapToBookTitleDtoList(bookTitleService.getBookTitles(bookTitle));
     }
@@ -97,6 +95,7 @@ public class LibraryController {
     }
 
     @PostMapping(value = "/rentals", consumes = MediaType.APPLICATION_JSON_VALUE)
+    //@ResponseStatus(HttpStatus.CREATED) //not working here
     public ResponseEntity<Void> createTaskBookRental(@RequestBody RentalDto taskDtoBook) {
         Rental task = rentalMapper.mapToRental(taskDtoBook);
         rentalService.saveTask(task);
@@ -104,7 +103,8 @@ public class LibraryController {
     }
 
     @PostMapping(value = "/changesOne",
-            params = {"bookTitle", "author", "publicationDate"})
+            params = {"bookTitle", "author", "publicationDate"},
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDto> updateTaskChange(
             @RequestBody BookDto taskDto,
             @RequestParam("bookTitle") String bookTitleName,
@@ -120,7 +120,7 @@ public class LibraryController {
     @RequestMapping(value = "/changesTwo",
             params = {"bookTitle", "author", "publicationDate"},
             method = POST)
-    @ResponseBody
+    //@ResponseBody
     public BookDto updateTaskChangeRequestMapping(
             @RequestBody BookDto taskDto,
             @RequestParam("bookTitle") String bookTitleName,
@@ -149,13 +149,9 @@ public class LibraryController {
             @RequestParam("status") String status,
             @RequestParam("idBook") Long idBook,
             @RequestParam("idReader") Long idReader) throws LibraryNotFoundException {
-        Rental task = rentalMapper.mapToRental(taskDto);
-        task.setId(task.getId());
-        Book book = bookService.getTask(idBook);
-        book.setStatus(status);
-        task.setBook(book);
-        Reader reader = readerService.getTask(idReader);
-        task.setReader(reader);
+        PutLibraryController putLibraryController =
+                new PutLibraryController(readerService, bookService, rentalService, rentalMapper);
+        Rental task = putLibraryController.getRental(taskDto, status, idBook, idReader);
         Rental savedTask = rentalService.saveTask(task);
         return ResponseEntity.ok(rentalMapper.mapToRentalDto(savedTask));
     }
@@ -164,10 +160,10 @@ public class LibraryController {
             value = "/books",
             params = {"id", "status"},
             method = PUT)
-    @ResponseBody
+    //@ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     public BookDto updateBookStatus(@RequestParam("id") long id, @RequestParam("status") String status) {
         return bookMapper.mapToBookDto(bookService.saveNewStatus(id, status));
     }
-
 
 }
